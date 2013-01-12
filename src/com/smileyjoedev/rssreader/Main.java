@@ -10,6 +10,7 @@ public class Main extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		startActivity(Intents.rssList(this));
 	}
 
 	@Override

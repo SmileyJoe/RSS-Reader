@@ -5,4 +5,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
 
+    <!-- BAR TITLES -->
+    
+    <string name="bar_title_rss_list">RSS</string>
+    
+    <!-- EMPTY LIST -->
+    
+    <string name="tv_rss_feed_empty">There are no articles</string>
+    
 </resources>
