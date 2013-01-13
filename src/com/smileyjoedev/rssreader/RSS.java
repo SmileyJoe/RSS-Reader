@@ -1,5 +1,7 @@
 package com.smileyjoedev.rssreader;
 
+import java.util.ArrayList;
+
 import android.util.Log;
 
 public class RSS {
@@ -8,15 +10,22 @@ public class RSS {
 	private String description;
 	private String link;
 	private long id;
-	private String category;
+	private ArrayList<Category> categories;
 	private Long ut;
+	private String content;
+	private String commentsLink;
+	private String author;
 	
 	public RSS() {
 		this.title = "";
 		this.description = "";
 		this.link = "";
 		this.id = 0;
-		this.category = "";
+		this.categories = new ArrayList<Category>();
+		this.ut = 0L;
+		this.content = "";
+		this.commentsLink = "";
+		this.author = "";
 	}
 	
 	/***********************************************
@@ -39,8 +48,21 @@ public class RSS {
 		this.id = id;
 	}
 	
-	public void setCategory(String category){
-		this.category = category;
+	public void addCategory(String title){
+		this.addCategory(title, 0L);
+	}
+	
+	public void addCategory(String title, long id){
+		Category cat = new Category();
+		
+		cat.setTitle(title);
+		cat.setId(id);
+		
+		this.categories.add(cat);
+	}
+	
+	public void setCategories(ArrayList<Category> categories){
+		this.categories = categories;
 	}
 	
 	public void setUt(String date){
@@ -49,6 +71,18 @@ public class RSS {
 	
 	public void setUt(Long ut){
 		this.ut = ut;
+	}
+	
+	public void setContent(String content){
+		this.content = content;
+	}
+	
+	public void setCommentsLink(String commentsLink){
+		this.commentsLink = commentsLink;
+	}
+	
+	public void setAuthor(String author){
+		this.author = author;
 	}
 
 	/***********************************************
@@ -71,8 +105,12 @@ public class RSS {
 		return id;
 	}
 	
-	public String getCategory(){
-		return category;
+	public ArrayList<Category> getCategories(){
+		return this.categories;
+	}
+	
+	public Category getCategory(int id){
+		return this.categories.get(id);
 	}
 	
 	public long getUt(){
@@ -96,6 +134,18 @@ public class RSS {
 		}
 		
 		return shortDescription;
+	}
+	
+	public String getContent(){
+		return this.content;
+	}
+	
+	public String getCommentsLink(){
+		return this.commentsLink;
+	}
+	
+	public String getAuthor(){
+		return this.author;
 	}
 	
 	/*****************************************************

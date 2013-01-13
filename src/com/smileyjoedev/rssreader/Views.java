@@ -17,9 +17,7 @@ public class Views {
 		this.context = context;
 	}
 	
-	public RSSListAdapter rssList(ArrayList<RSS> rssFeed, ListView list) {
-//		TextView emptyView = (TextView) findViewById(R.id.tv_rss_feed_empty);
-		
+	public RSSListAdapter rssList(ArrayList<RSS> rssFeed, ListView list, TextView emptyView) {
 		int first = list.getFirstVisiblePosition();
 		View topChild = list.getChildAt(0);
 		int top;
@@ -33,7 +31,7 @@ public class Views {
 		RSSListAdapter adapter = new RSSListAdapter(this.context, rssFeed);
 		list.setAdapter(adapter);
 		list.setSelectionFromTop(first, top);
-//		list.setEmptyView(emptyView);
+		list.setEmptyView(emptyView);
 		
 		return adapter;
 	}

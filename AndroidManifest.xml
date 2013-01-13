@@ -4,6 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="16" />
@@ -25,6 +26,14 @@
         <activity 
   	   	    android:name=".RSSList" 
 			android:label="@string/bar_title_rss_list"/>
+        <activity 
+  	   	    android:name=".RssItemView" 
+			android:label="@string/bar_title_rss_item_view"
+			android:uiOptions="splitActionBarWhenNarrow"/>
+        <activity 
+  	   	    android:name=".NoConnection" 
+			android:label="@string/bar_title_no_connection"
+			android:theme="@style/Holo.Theme.Dialog.Light"/>
     </application>
 
 </manifest>

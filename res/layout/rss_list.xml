@@ -14,7 +14,7 @@
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
 	    android:id="@+id/tv_rss_feed_empty"
-	    android:text="@string/tv_rss_feed_empty">
-	    
+	    android:text="@string/tv_rss_feed_empty"
+	    android:gravity="center">
 	</TextView>
 </LinearLayout>

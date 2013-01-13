@@ -42,4 +42,11 @@ public class TimeStamp {
 		return date;
 	}
 	
+	public static long getCurrentUt(){
+		Calendar c = Calendar.getInstance();
+		Date ut = c.getTime();
+		
+		return ut.getTime();
+	}
+	
 }

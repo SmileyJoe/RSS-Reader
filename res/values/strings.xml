@@ -4,13 +4,25 @@
     <string name="app_name">RSS Reader</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    <string name="splash_screen_text">RSS Reader</string>
 
     <!-- BAR TITLES -->
     
     <string name="bar_title_rss_list">RSS</string>
+    <string name="bar_title_rss_item_view">RSS</string>
+    <string name="bar_title_no_connection">RSS</string>
     
     <!-- EMPTY LIST -->
     
     <string name="tv_rss_feed_empty">There are no articles</string>
+    
+    <string name="tv_no_connection">You do not have an internet connection, this application will not function correctly without one</string>
+    
+    <string name="bt_ok">OK</string>
+    
+    <string name="update_no_internet">You cannot update without an internet connection</string>
+    <string name="update_no_new">There are no new items</string>
+    <string name="update_new">Update completed successfully</string>
+    <string name="update_failed">An error occured</string>
     
 </resources>
