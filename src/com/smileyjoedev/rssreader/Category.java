@@ -48,6 +48,14 @@ public class Category {
 		return this.status;
 	}
 
+	public boolean isFavourite(){
+		if(this.getStatus() == this.STATUS_FAVOURITE){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "Category [getId()=" + getId() + ", getTitle()=" + getTitle()

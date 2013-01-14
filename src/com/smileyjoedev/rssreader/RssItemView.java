@@ -36,7 +36,6 @@ public class RssItemView extends SherlockActivity {
 		
         if(extras.containsKey("rss_item_id")){
         	this.itemId = extras.getLong("rss_item_id");
-        	Log.d("SmileyJoeDev", "OnCreate ItemId: " + this.itemId);
         } else {
         	this.itemId = 0L;
         }
@@ -71,6 +70,22 @@ public class RssItemView extends SherlockActivity {
 	        	commentIntent.setData(Uri.parse(this.rss.getCommentsLink()));
 	        	startActivity(commentIntent);
 	        	return true;
+	        case R.id.menu_previous:
+	        	this.itemId = this.rssAdapter.getPreviousId(this.rss.getUt());
+	        	if(this.itemId > 0){
+	        		this.populateView();
+	        	} else {
+	        		Gen.toast(this, this.getString(R.string.toast_no_prev_item), 1);
+	        	}
+	        	return true;
+	        case R.id.menu_next:
+	        	this.itemId = this.rssAdapter.getNextId(this.rss.getUt());
+	        	if(this.itemId > 0){
+	        		this.populateView();
+	        	} else {
+	        		Gen.toast(this, this.getString(R.string.toast_no_next_item), 1);
+	        	}
+	        	return true;
 	        case android.R.id.home:
 				finish();
 				return true;
@@ -92,6 +107,7 @@ public class RssItemView extends SherlockActivity {
     
     public void populateView(){
     	this.rss = this.rssAdapter.getItemDetails(this.itemId);
+    	this.rssAdapter.updateRead(this.rss.getId());
     	this.tvTitle.setText(this.rss.getTitle());
     	this.tvDate.setText(this.rss.getDate(TimeStamp.LONG_DATE_TIME));
     	this.tvAuthor.setText(this.rss.getAuthor());

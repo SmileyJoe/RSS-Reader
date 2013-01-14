@@ -51,12 +51,16 @@ public class DbCategoryAdapter {
 		return this.sortCursorArrayList();
 	}
 	
+	public ArrayList<Category> getFavourites(){
+		this.setCursor("WHERE category_status = '" + Category.STATUS_FAVOURITE + "'");
+		return this.sortCursorArrayList();
+	}
+	
 	/******************************************
 	 * SAVE
 	 *****************************************/
 	
 	public long saveItem(Category cat) {
-		Log.d("SmileyJoeDev", "CategoryAdapter Save");
 		long dbId = 0;
 		
 		ContentValues values = createContentValues(cat);
@@ -66,13 +70,24 @@ public class DbCategoryAdapter {
 	}
 	
 	public long saveRelCat(long rssItemId, long catId){
-		Log.d("SmileyJoeDev", "categoryAdapter SaveRel");
 		long dbId = 0;
 		
 		ContentValues values = createContentValuesRelItem(rssItemId, catId);
 		dbId = this.db.insert("rss_item_rel_category", null, values);
 		
 		return dbId;
+	}
+	
+	/*******************************************
+	 * UPDATE
+	 ******************************************/
+	
+	public void updateStatus(long catId, int statusId){
+		ContentValues values = new ContentValues();
+		
+		values.put("category_status", statusId);
+		
+		db.update("category", values, " _id = '" + catId + "' ", null);
 	}
 	
 	/******************************************
@@ -84,7 +99,7 @@ public class DbCategoryAdapter {
 				"SELECT _id, category_title, category_status "
 				+ "FROM category " 
 				+ " " + where + " "
-				+ "ORDER BY category_title ASC", null);
+				+ "ORDER BY category_status DESC, category_title ASC", null);
 	}
 	
 	private void setCursorRelItem(String where){
@@ -172,7 +187,6 @@ public class DbCategoryAdapter {
 	 *************************************/
 	
 	public long checkCatExists(String title){
-		Log.d("SmileyJoeDev", "categoryAdapter checkCat");
 		long catId = 0L;
 		
 		Cursor cursor = this.db.rawQuery("SELECT _id FROM category WHERE category_title = '" + title + "'", null);

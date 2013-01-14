@@ -11,4 +11,12 @@
         android:icon="@drawable/comment"
         android:showAsAction="ifRoom|withText"
         android:title="Comment" />
+    <item android:id="@+id/menu_previous"
+        android:icon="@drawable/previous"
+        android:showAsAction="ifRoom|withText"
+        android:title="Previous" />
+    <item android:id="@+id/menu_next"
+        android:icon="@drawable/next"
+        android:showAsAction="ifRoom|withText"
+        android:title="Next" />
 </menu>

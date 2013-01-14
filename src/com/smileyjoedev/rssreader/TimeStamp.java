@@ -28,7 +28,6 @@ public class TimeStamp {
 			ut = cal.getTimeInMillis() / 1000L;
 			
 		} catch (ParseException e) {
-			Log.d("SmileyJoeDev", "Date format incorrect");
 		}
 		
 		return ut;

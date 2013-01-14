@@ -1,13 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:orientation="horizontal"
+        android:id="@+id/ll_category_wrapper"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text="Favourite 1"
+            android:gravity="center"
+            android:background="@color/grey"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="2dip"
+            android:id="@+id/tv_favourite_one">
+        </TextView>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text="Favourite 1"
+            android:gravity="center"
+            android:background="@color/grey"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="2dip"
+            android:id="@+id/tv_favourite_two">
+        </TextView>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text="Favourite 1"
+            android:gravity="center"
+            android:background="@color/grey"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="2dip"
+            android:id="@+id/tv_favourite_three">
+        </TextView>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0"
+            android:text="Favourite 1"
+            android:gravity="center"
+            android:background="@color/grey"
+            android:layout_marginLeft="2dip"
+            android:layout_marginRight="2dip"
+            android:id="@+id/tv_favourite_four">
+        </TextView>
+    </LinearLayout>
     
 	<ListView
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"
-	    android:id="@+id/lv_rss_feed">
+	    android:id="@+id/lv_rss_feed"
+	    android:layout_alignParentTop="true"
+	    android:layout_above="@id/ll_category_wrapper">
 	</ListView>
 	
 	<TextView
@@ -15,6 +68,8 @@
 	    android:layout_height="fill_parent"
 	    android:id="@+id/tv_rss_feed_empty"
 	    android:text="@string/tv_rss_feed_empty"
-	    android:gravity="center">
+	    android:gravity="center"
+	    android:layout_alignParentTop="true"
+	    android:layout_above="@id/ll_category_wrapper">
 	</TextView>
-</LinearLayout>
+</RelativeLayout>

@@ -3,4 +3,8 @@
         android:icon="@drawable/refresh"
         android:showAsAction="ifRoom|withText"
         android:title="Refresh" />
+    <item android:id="@+id/menu_categories"
+        android:icon="@drawable/categories"
+        android:showAsAction="ifRoom|withText"
+        android:title="Categories" />
 </menu>

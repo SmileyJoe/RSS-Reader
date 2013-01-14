@@ -27,6 +27,7 @@ public class DbRSSAdapter {
 	private int contentCol;
 	private int commentsLinkCol;
 	private int authorCol;
+	private int readCol;
 	
 	/*****************************************
 	 * CONSTRUCTOR
@@ -53,12 +54,56 @@ public class DbRSSAdapter {
 		return this.sortCursorArrayListItem();
 	}
 	
+	public ArrayList<RSS> getByCategory(long catId){
+		this.setCursorItemRelCat("WHERE relCat.category_id = '" + catId + "'");
+		return this.sortCursorArrayListItem();
+	}
+	
+	public long getNextId(long itemUt){
+		long id = 0L;
+		
+		Cursor cursor = this.db.rawQuery(
+				"SELECT _id "
+				+ "FROM rss_item "
+				+ "WHERE rss_item_ut > '" + itemUt + "' "
+				+ "ORDER BY rss_item_ut ASC "
+				+ "LIMIT 1", null);
+		
+		if(cursor != null){
+			cursor.moveToFirst();
+			if(cursor.getCount() > 0){
+				id = cursor.getLong(cursor.getColumnIndex("_id"));
+			}
+		}
+		
+		return id;
+	}
+	
+	public long getPreviousId(long itemUt){
+		long id = 0L;
+		
+		Cursor cursor = this.db.rawQuery(
+				"SELECT _id "
+				+ "FROM rss_item "
+				+ "WHERE rss_item_ut < '" + itemUt + "' "
+				+ "ORDER BY rss_item_ut DESC "
+				+ "LIMIT 1", null);
+		
+		if(cursor != null){
+			cursor.moveToFirst();
+			if(cursor.getCount() > 0){
+				id = cursor.getLong(cursor.getColumnIndex("_id"));
+			}
+		}
+		
+		return id;
+	}
+	
 	/******************************************
 	 * SAVE
 	 *****************************************/
 	
 	public long saveItem(RSS rss) {
-		Log.d("SmileyJoeDev", "RssAdapter Save");
 		long dbId = 0;
 		
 		ContentValues values = createContentValuesItem(rss);
@@ -79,14 +124,35 @@ public class DbRSSAdapter {
 		return dbId;
 	}
 	
+	/*******************************************
+	 * UPDATE
+	 ******************************************/
+	
+	public void updateRead(long rssItemId){
+		ContentValues values = new ContentValues();
+		
+		values.put("rss_item_read", 1);
+		
+		db.update("rss_item", values, " _id = '" + rssItemId + "' ", null);
+	}
+	
 	/******************************************
 	 * GENERAL
 	 *****************************************/
 	
 	private void setCursorItem(String where){
 		this.cursor = this.db.rawQuery(
-				"SELECT _id, rss_item_title, rss_item_description, rss_item_ut, rss_item_link, rss_item_content, rss_item_comments_link, rss_item_author "
-				+ "FROM rss_item " 
+				"SELECT _id, rss_item_title, rss_item_description, rss_item_ut, rss_item_link, rss_item_content, rss_item_comments_link, rss_item_author, rss_item_read "
+				+ "FROM rss_item "
+				+ " " + where + " "
+				+ "ORDER BY rss_item_ut DESC", null);
+	}
+	
+	private void setCursorItemRelCat(String where){
+		this.cursor = this.db.rawQuery(
+				"SELECT item._id, item.rss_item_title, item.rss_item_description, item.rss_item_ut, item.rss_item_link, item.rss_item_content, item.rss_item_comments_link, item.rss_item_author, item.rss_item_read "
+				+ "FROM rss_item item "
+				+ "JOIN rss_item_rel_category relCat ON item._id = relCat.rss_item_id " 
 				+ " " + where + " "
 				+ "ORDER BY rss_item_ut DESC", null);
 	}
@@ -100,6 +166,7 @@ public class DbRSSAdapter {
 		this.contentCol = this.cursor.getColumnIndex("rss_item_content");
 		this.commentsLinkCol = this.cursor.getColumnIndex("rss_item_comments_link");
 		this.authorCol = this.cursor.getColumnIndex("rss_item_author");
+		this.readCol = this.cursor.getColumnIndex("rss_item_read");
 	}
 	
 	private RSS getDataItem(){
@@ -113,6 +180,7 @@ public class DbRSSAdapter {
 		rss.setContent(this.cursor.getString(this.contentCol));
 		rss.setCommentsLink(this.cursor.getString(this.commentsLinkCol));
 		rss.setAuthor(this.cursor.getString(this.authorCol));
+		rss.setRead(this.cursor.getInt(this.readCol));
 		rss.setCategories(this.dbCatAdapter.getByRssItem(rss.getId()));
 		
 		return rss;
@@ -161,6 +229,7 @@ public class DbRSSAdapter {
 		values.put("rss_item_content", rss.getContent());
 		values.put("rss_item_comments_link", rss.getCommentsLink());
 		values.put("rss_item_author", rss.getAuthor());
+		values.put("rss_item_read", rss.getReadInt());
 		
 		return values;
 	}

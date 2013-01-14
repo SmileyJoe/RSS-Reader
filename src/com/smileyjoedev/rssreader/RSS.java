@@ -15,6 +15,7 @@ public class RSS {
 	private String content;
 	private String commentsLink;
 	private String author;
+	private boolean read;
 	
 	public RSS() {
 		this.title = "";
@@ -26,6 +27,7 @@ public class RSS {
 		this.content = "";
 		this.commentsLink = "";
 		this.author = "";
+		this.read = false;
 	}
 	
 	/***********************************************
@@ -84,6 +86,18 @@ public class RSS {
 	public void setAuthor(String author){
 		this.author = author;
 	}
+	
+	public void setRead(boolean read){
+		this.read = read;
+	}
+	
+	public void setRead(int read){
+		if(read == 1){
+			this.setRead(true);
+		} else {
+			this.setRead(false);
+		}
+	}
 
 	/***********************************************
 	 * GETTERS
@@ -127,8 +141,6 @@ public class RSS {
 		String shortDescription = this.description.replaceAll("\\<.*?\\>", "");
 		
 		int end = this.description.indexOf(" ", 150);
-		Log.d("SmileyJoeDev", "End:" + end);
-		Log.d("SmileyJoeDev", "Length:" + shortDescription.length());
 		if(end > 0 && end < shortDescription.length()){
 			shortDescription = shortDescription.substring(0, end) + "...";
 		}
@@ -146,6 +158,18 @@ public class RSS {
 	
 	public String getAuthor(){
 		return this.author;
+	}
+	
+	public boolean getRead(){
+		return this.read;
+	}
+	
+	public int getReadInt(){
+		if(this.getRead()){
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 	
 	/*****************************************************

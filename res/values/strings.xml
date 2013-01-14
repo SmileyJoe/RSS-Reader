@@ -11,10 +11,12 @@
     <string name="bar_title_rss_list">RSS</string>
     <string name="bar_title_rss_item_view">RSS</string>
     <string name="bar_title_no_connection">RSS</string>
+    <string name="bar_title_category_list">Categories</string>
     
     <!-- EMPTY LIST -->
     
     <string name="tv_rss_feed_empty">There are no articles</string>
+    <string name="tv_categories_empty">There are no categories</string>
     
     <string name="tv_no_connection">You do not have an internet connection, this application will not function correctly without one</string>
     
@@ -24,5 +26,11 @@
     <string name="update_no_new">There are no new items</string>
     <string name="update_new">Update completed successfully</string>
     <string name="update_failed">An error occured</string>
+    <string name="update">Updating feed</string>
+    
+    <string name="toast_to_many_fav">You can only have four favourites. Please unselect one.</string>
+    
+    <string name="toast_no_next_item">There are no more items</string>
+    <string name="toast_no_prev_item">There are no more items</string>
     
 </resources>

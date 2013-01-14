@@ -15,7 +15,6 @@ public class Intents {
 	
 	public static Intent rssItemView(Context context, long itemId){
 		Intent intent = new Intent(context, RssItemView.class);
-		Log.d("SmileyJoeDev", "Intent ItemId: " + itemId);
 		Bundle extras = new Bundle();
 		extras.putLong("rss_item_id", itemId);
 		intent.putExtras(extras);	
@@ -25,6 +24,12 @@ public class Intents {
 	
 	public static Intent noConnection(Context context){
 		Intent intent = new Intent(context, NoConnection.class);
+		
+		return intent;
+	}
+	
+	public static Intent categoryList(Context context){
+		Intent intent = new Intent(context, CategoryList.class);
 		
 		return intent;
 	}

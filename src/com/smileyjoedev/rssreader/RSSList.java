@@ -17,6 +17,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Animation.AnimationListener;
@@ -36,12 +38,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
-public class RSSList extends SherlockActivity implements OnItemClickListener {
+public class RSSList extends SherlockActivity implements OnItemClickListener, OnClickListener {
 
 	private ListView lvRssFeed;
 	private ArrayList<RSS> rssFeed;
@@ -56,6 +59,15 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 	private TextView tvRssFeedEmpty;
 	private SharedPreferences prefs;
 	private Menu menu;
+	private long catId;
+	private Category category;
+	private DbCategoryAdapter categoryAdapter;
+	private ArrayList<Category> favourites;
+	private TextView tvFavOne;
+	private TextView tvFavTwo;
+	private TextView tvFavThree;
+	private TextView tvFavFour;
+	private ActionBar actionBar;
 	
 	private AnimationListener rotateListener = new AnimationListener() {
 		
@@ -81,18 +93,16 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 	};
 	
 	public void onCreate(Bundle savedInstanceState) {
-		Log.d("SmileyJoeDev", "OnCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.rss_list);
 		this.initialize();
 		
 		this.populateView();
-		Log.d("SmileyJoeDev", "OnCreate End");
+		this.populateFavourites();
 	}
 	
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	Log.d("SmileyJoeDev", "OnCreateOptionsMenu Start");
         MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.rss_list, menu);
         this.menu = menu;
@@ -100,7 +110,6 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 		if(!this.prefs.contains("rss_feed_last_update_ut") || (this.prefs.getLong("rss_feed_last_update_ut", 0) == 0)){
 			this.updateRssFeed(menu.getItem(0));
 		}
-        Log.d("SmileyJoeDev", "OnCreateOptionsMenu End");
         return super.onCreateOptionsMenu(menu);
     }
 	
@@ -110,6 +119,9 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 	        case R.id.menu_refresh:
 	        	this.updateRssFeed(item);
 	            return true;
+	        case R.id.menu_categories:
+	        	startActivityForResult(Intents.categoryList(this), 0);
+	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
         }
@@ -135,16 +147,97 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
         
         this.prefs = this.getSharedPreferences(Constants.PREFERENCE_NAME, 0);
         
+        this.catId = 0;
+        this.category = new Category();
+        
+        this.categoryAdapter = new DbCategoryAdapter(this);
+        
+        this.favourites = new ArrayList<Category>();
+        
+        this.tvFavOne = (TextView) findViewById(R.id.tv_favourite_one);
+        this.tvFavTwo = (TextView) findViewById(R.id.tv_favourite_two);
+        this.tvFavThree = (TextView) findViewById(R.id.tv_favourite_three);
+        this.tvFavFour = (TextView) findViewById(R.id.tv_favourite_four);
+        
+        this.actionBar = getSupportActionBar();
+    }
+    
+    public void populateFavourites(){
+    	this.tvFavOne.setOnClickListener(this);
+    	this.tvFavTwo.setOnClickListener(this);
+    	this.tvFavThree.setOnClickListener(this);
+    	this.tvFavFour.setOnClickListener(this);
+    	
+    	this.favourites = this.categoryAdapter.getFavourites();
+    	
+    	for(int i = 0; i < this.favourites.size(); i++){
+    		String title = this.favourites.get(i).getTitle();
+    		switch(i){
+	    		case 0:
+	    			this.tvFavOne.setText(title);
+	    			this.tvFavOne.setId(0);
+	    			break;
+	    		case 1:
+	    			this.tvFavTwo.setText(title);
+	    			this.tvFavTwo.setId(1);
+	    			break;
+	    		case 2:
+	    			this.tvFavThree.setText(title);
+	    			this.tvFavThree.setId(2);
+	    			break;
+	    		case 3:
+	    			this.tvFavFour.setText(title);
+	    			this.tvFavFour.setId(3);
+	    			break;
+    		}
+    	}
+    	
+    	switch(this.favourites.size()){
+	    	case 0:
+	    		this.tvFavOne.setVisibility(View.GONE);
+	    		this.tvFavTwo.setVisibility(View.GONE);
+	    		this.tvFavThree.setVisibility(View.GONE);
+	    		this.tvFavFour.setVisibility(View.GONE);
+	    		break;
+	    	case 1:
+	    		this.tvFavOne.setVisibility(View.VISIBLE);
+	    		this.tvFavTwo.setVisibility(View.GONE);
+	    		this.tvFavThree.setVisibility(View.GONE);
+	    		this.tvFavFour.setVisibility(View.GONE);
+	    		break;
+	    	case 2:
+	    		this.tvFavOne.setVisibility(View.VISIBLE);
+	    		this.tvFavTwo.setVisibility(View.VISIBLE);
+	    		this.tvFavThree.setVisibility(View.GONE);
+	    		this.tvFavFour.setVisibility(View.GONE);
+	    		break;
+	    	case 3:
+	    		this.tvFavOne.setVisibility(View.VISIBLE);
+	    		this.tvFavTwo.setVisibility(View.VISIBLE);
+	    		this.tvFavThree.setVisibility(View.VISIBLE);
+	    		this.tvFavFour.setVisibility(View.GONE);
+	    		break;
+	    	case 4:
+	    		this.tvFavOne.setVisibility(View.VISIBLE);
+	    		this.tvFavTwo.setVisibility(View.VISIBLE);
+	    		this.tvFavThree.setVisibility(View.VISIBLE);
+	    		this.tvFavFour.setVisibility(View.VISIBLE);
+	    		break;
+    	}
+    	
+    	
     }
     
     public void populateView(){
     	this.rssFeed = this.rssAdapter.getItems();
+    	this.changeBarTitle("All");
     	this.rssListAdapter = this.views.rssList(this.rssFeed, this.lvRssFeed, (TextView) findViewById(R.id.tv_rss_feed_empty));
     }
     
 
     public void updateRssFeed(MenuItem item){
     	if(Gen.isInternet(this)){
+    		Gen.toast(this, this.getString(R.string.update), 1);
 	    	this.downloading = true;
 	        // Apply the animation to our View
 	        this.refreshView.startAnimation(this.rotateClockwise);
@@ -161,9 +254,37 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 		
     }
     
+    public void changeCategory(long catId){
+    	this.catId = catId;
+    	if(catId == 1){
+    		this.updateView();
+    	} else if(catId != 0){
+        	this.category = this.categoryAdapter.getDetails(this.catId);
+        	this.changeBarTitle(this.category.getTitle());
+        	this.rssFeed = this.rssAdapter.getByCategory(this.catId);
+        	this.refreshView();
+    	}
+    	
+    }
+    
     public void updateView(){
-    	this.rssFeed = this.rssAdapter.getItems();
-    	 this.rssListAdapter.setRssFeed(this.rssFeed);
+    	if(this.catId > 1){
+    		this.changeBarTitle(this.category.getTitle());
+    		this.rssFeed = this.rssAdapter.getByCategory(this.catId);
+    	} else {
+    		this.changeBarTitle("All");
+    		this.rssFeed = this.rssAdapter.getItems();
+    	}
+    	
+    	 this.refreshView();
+    }
+    
+    public void changeBarTitle(String title){
+    	this.actionBar.setTitle(this.getString(R.string.bar_title_rss_list) + ": " + title);
+    }
+    
+    public void refreshView(){
+    	this.rssListAdapter.setRssFeed(this.rssFeed);
 	     this.rssListAdapter.notifyDataSetChanged();
 	     this.lvRssFeed.refreshDrawableState();
     }
@@ -175,7 +296,6 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 			HttpResponse response = httpclient.execute(new HttpGet(url));
 			content = response.getEntity().getContent();
 		} catch (Exception e) {
-			Log.v("SmileyJoeDev", e.toString());
 		}
 		return content;
     }	
@@ -208,7 +328,6 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 			final ArrayList<RSS> newFeeds = this.getRSS(this.url);
 			
 			for(int i = 0; i < newFeeds.size(); i++){
-				Log.d("SmileyJoeDev", "doInBackground Save");
 				this.rssAdapter.saveItem(newFeeds.get(i));
 			}
 			
@@ -284,10 +403,6 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 							}
 						}
 					}else if(eventType == XmlPullParser.END_TAG && parser.getName().equalsIgnoreCase("item")){
-						Log.d("SmileyJoeDev", "New Item");
-//						for(int i = 0; i < rss.getCategories().size(); i++){
-//							Log.d("SmileyJoeDev", "Category: " + rss.getCategory(i).getTitle());
-//						}
 						tempRss.add(rss);
 						isItem = false;
 					}
@@ -328,9 +443,32 @@ public class RSSList extends SherlockActivity implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
 		switch(view.getId()){
 			case R.id.lv_rss_feed:
-				startActivity(Intents.rssItemView(this, this.rssFeed.get(position).getId()));
+				startActivityForResult(Intents.rssItemView(this, this.rssFeed.get(position).getId()), 1);
 				break;
 		}
+		
+	}
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch(requestCode){
+			case 0:
+				if(resultCode == Activity.RESULT_OK){
+					if(data.hasExtra("category_id")){
+						this.changeCategory(data.getLongExtra("category_id", 0));
+					}
+				}
+				
+				this.populateFavourites();
+				break;
+			case 1:
+				this.updateView();
+				break;
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		this.changeCategory(this.favourites.get(v.getId()).getId());
 		
 	}
 }

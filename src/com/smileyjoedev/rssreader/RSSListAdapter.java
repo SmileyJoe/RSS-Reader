@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class RSSListAdapter extends BaseAdapter {
@@ -57,18 +58,21 @@ public class RSSListAdapter extends BaseAdapter {
 		TextView rssDescription = (TextView) convertView.findViewById(R.id.tv_rss_description);
 		TextView rssDate = (TextView) convertView.findViewById(R.id.tv_rss_date);
 		TextView rssSectionTitle = (TextView) convertView.findViewById(R.id.tv_rss_section_title);
+		LinearLayout llRSSDetailsWrapper = (LinearLayout) convertView.findViewById(R.id.ll_rss_details_wrapper);
 		
 		if(!this.showHeader(position)){
-			Log.d("SmileyJoeDev", "Dates are equal");
 			rssSectionTitle.setVisibility(View.GONE);
 		} else {
-			Log.d("SmileyJoeDev", "Dates are not equal");
 			rssSectionTitle.setText(rss.getDate(TimeStamp.SHORT_DATE));
 		}
 		
 		rssTitle.setText(rss.getTitle());
 		rssDescription.setText(rss.getShortDescription());
 		rssDate.setText(rss.getDate(TimeStamp.LONG_DATE_TIME));
+		
+		if(rss.getRead()){
+			llRSSDetailsWrapper.setBackgroundColor(this.context.getResources().getColor(R.color.grey_light));
+		}
 		
 		return convertView;
 	}
