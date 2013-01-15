@@ -1,20 +1,18 @@
 package com.smileyjoedev.rssreader;
 
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import com.actionbarsherlock.app.SherlockActivity;
+
 import android.os.Bundle;
 import android.os.Handler;
-import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 
-public class Main extends Activity {
+public class Main extends SherlockActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+		getSupportActionBar().hide();
 		new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
